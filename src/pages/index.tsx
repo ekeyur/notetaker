@@ -3,9 +3,10 @@ import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Header from "~/components/Header"
 import { api, type RouterOutputs } from "~/utils/api";
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { NoteEditor } from "~/components/NoteEditor";
 import { NoteCard } from "~/components/NoteCard";
+import classNames from "classnames";
 
 const Home: NextPage = () => {
   return (
@@ -61,14 +62,19 @@ const Content: React.FC = () => {
     }
   })
 
+  useEffect(() => {
+    void refetchNotes();
+  },[selectedTopic?.id])
+
   return (
     <div className="mx-5 mt-5 grid grid-cols-4 gap2">
       <div className="px-2" >
-        <ul className="menu rounded-box w-56 bg-base-100 p-2">
+        <ul className="menu w-56 bg-base-100 p-2">
           {topics?.map((topic) => (
-            <li key={topic?.id}>
+            <li key={topic?.id} className={classNames('', {"bg-primary text-white": selectedTopic?.id === topic?.id})}>
               <a href="#" onClick={(e) => {
                 e.preventDefault();
+                setSelectedTopic(topic)
                 }}>
                 {topic.title}
               </a>
